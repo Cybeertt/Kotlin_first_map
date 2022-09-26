@@ -12,9 +12,12 @@ import com.example.distancetrackerapp.util.Constants.ACTION_SERVICE_START
 import com.example.distancetrackerapp.util.Constants.ACTION_SERVICE_STOP
 import com.example.distancetrackerapp.util.Constants.NOTIFICATION_CHANNEL_ID
 import com.example.distancetrackerapp.util.Constants.NOTIFICATION_CHANNEL_NAME
+import com.example.distancetrackerapp.util.Constants.NOTIFICATION_ID
 import com.google.android.gms.maps.model.LatLng
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class TrackerService : LifecycleService() {
 
     @Inject
@@ -40,7 +43,7 @@ class TrackerService : LifecycleService() {
             when (it.action) {
                 ACTION_SERVICE_START -> {
                     started.postValue(true)
-                    //startForegroundService()
+                    startForegroundService()
                     //startLocationUpdates()
                 }
                 ACTION_SERVICE_STOP -> {
@@ -52,6 +55,11 @@ class TrackerService : LifecycleService() {
             }
         }
         return super.onStartCommand(intent, flags, startId)
+    }
+
+    private fun startForegroundService() {
+        createNotificationChannel()
+        startForeground(NOTIFICATION_ID, notification.build())
     }
 
     private fun createNotificationChannel() {
